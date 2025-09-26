@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    var communities = ViewBag.Communities as List<CommunalSystem.Models.Community>;
+    var services = ViewBag.Services as List<CommunalSystem.Models.Service>;
+    var users = ViewBag.Users as List<CommunalSystem.Models.User>;
+}
+<div class="dashboard-container">
+    <h1 class="text-4xl font-bold mb-6 text-indigo-300">Admin Dashboard</h1>
+    <div class="card">
+        <h2 class="text-2xl mb-4">Communities</h2>
+        <ul class="list-disc pl-5 mb-4">
+            @foreach (var community in communities)
+            {
+                <li class="mb-2">
+                    <span class="text-gray-200">@community.Name</span>
+                    <form method="post" action="@Url.Action("EditCommunity", "Dashboard")" class="inline-block ml-4">
+                        <input type="hidden" name="communityId" value="@community.Id" />
+                        <div class="form-group inline-block">
+                            <input type="text" name="name" value="@community.Name" class="form-input w-1/3" />
+                            <button type="submit" class="btn ml-2">Edit</button>
+                        </div>
+                    </form>
+                    <a href="@Url.Action("DeleteCommunity", "Dashboard", new { communityId = community.Id })" class="text-red-400 hover:text-red-300 ml-2">Delete</a>
+                </li>
+            }
+        </ul>
+        <form method="post" action="@Url.Action("CreateCommunity", "Dashboard")" class="mb-6">
+            <div class="form-group">
+                <label class="form-label">New Name:</label>
+                <input type="text" name="name" class="form-input" />
+            </div>
+            <button type="submit" class="btn">Create</button>
+        </form>
+
+        <h2 class="text-2xl mb-4">Services</h2>
+        <ul class="list-disc pl-5 mb-4">
+            @foreach (var service in services)
+            {
+                <li class="mb-2">
+                    <span class="text-gray-200">@service.Name</span>
+                    <form method="post" action="@Url.Action("EditService", "Dashboard")" class="inline-block ml-4">
+                        <input type="hidden" name="serviceId" value="@service.Id" />
+                        <div class="form-group inline-block">
+                            <input type="text" name="name" value="@service.Name" class="form-input w-1/3" />
+                            <button type="submit" class="btn ml-2">Edit</button>
+                        </div>
+                    </form>
+                    <a href="@Url.Action("DeleteService", "Dashboard", new { serviceId = service.Id })" class="text-red-400 hover:text-red-300 ml-2">Delete</a>
+                </li>
+            }
+        </ul>
+        <form method="post" action="@Url.Action("CreateService", "Dashboard")" class="mb-6">
+            <div class="form-group">
+                <label class="form-label">New Service Name:</label>
+                <input type="text" name="name" class="form-input" />
+            </div>
+            <button type="submit" class="btn">Create</button>
+        </form>
+
+        <h2 class="text-2xl mb-4">Users</h2>
+        <ul class="list-disc pl-5">
+            @foreach (var user in users)
+            {
+                <li class="mb-2">
+                    <span class="text-gray-200">@user.FirstName @user.LastName (@user.Role)</span>
+                    <a href="@Url.Action("DeleteUser", "Dashboard", new { userId = user.Id })" class="text-red-400 hover:text-red-300 ml-4">Delete</a>
+                </li>
+            }
+        </ul>
+        <form method="post" action="@Url.Action("CreateUser", "Dashboard")" class="mt-6 space-y-4">
+            <div class="form-group">
+                <label class="form-label">Role:</label>
+                <select name="role" class="form-input">
+                    <option value="manager">Manager</option>
+                    <option value="resident">Resident</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">First Name (Username):</label>
+                <input type="text" name="first_name" class="form-input" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Last Name (Password):</label>
+                <input type="text" name="last_name" class="form-input" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Community ID (for residents):</label>
+                <input type="number" name="community_id" class="form-input" />
+            </div>
+            <button type="submit" class="btn">Create</button>
+        </form>
+    </div>
+</div>>

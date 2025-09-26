@@ -1,0 +1,129 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body background and font color */
+body {
+    background: #f4f6f8;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #1f2937; /* Dark slate */
+    color: #fff;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+    .navbar a {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 1rem;
+        font-weight: 500;
+    }
+
+        .navbar a:hover {
+            color: #3b82f6; /* Blue accent on hover */
+        }
+
+/* Sidebar for dashboards */
+.sidebar {
+    background-color: #111827; /* Dark theme */
+    color: #d1d5db;
+    min-height: 100vh;
+    width: 220px;
+    padding-top: 2rem;
+    position: fixed;
+}
+
+    .sidebar a {
+        display: block;
+        color: #d1d5db;
+        padding: 12px 20px;
+        text-decoration: none;
+        border-left: 4px solid transparent;
+        margin-bottom: 4px;
+        transition: 0.3s;
+    }
+
+        .sidebar a:hover {
+            background-color: #1f2937;
+            border-left: 4px solid #3b82f6;
+            color: #fff;
+        }
+
+/* Content area next to sidebar */
+.content {
+    margin-left: 240px; /* width of sidebar + padding */
+    padding: 2rem;
+}
+
+/* Card styles */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+    }
+
+/* Buttons */
+.btn-primary {
+    background-color: #3b82f6;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+    }
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+    table th, table td {
+        padding: 12px 15px;
+        text-align: left;
+    }
+
+    table th {
+        background-color: #1f2937;
+        color: #fff;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #f4f6f8;
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: relative;
+        min-height: auto;
+    }
+
+    .content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+}

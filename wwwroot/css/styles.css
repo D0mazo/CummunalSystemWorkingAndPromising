@@ -1,0 +1,185 @@
+﻿/* Import Tailwind CSS via CDN (base styles) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom base styles */
+@layer base {
+    html {
+        @apply bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white font-sans;
+        height: 100%;
+    }
+
+    body {
+        @apply min-h-screen flex flex-col;
+        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    }
+
+    #__next {
+        @apply flex-grow;
+    }
+}
+
+/* Custom components */
+@layer components {
+    .card {
+        @apply bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 border border-white/20 hover:shadow-xl transition-all duration-300;
+    }
+
+    .btn {
+        @apply px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 transition-all duration-200;
+    }
+
+    .form-group {
+        @apply mb-4;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-300;
+    }
+
+    .form-input {
+        @apply w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors duration-200;
+    }
+
+    .table {
+        @apply w-full text-left border-collapse;
+    }
+
+        .table th {
+            @apply bg-gray-800/70 px-4 py-2 border-b border-gray-700;
+        }
+
+        .table td {
+            @apply px-4 py-2 border-b border-gray-700;
+        }
+
+    .success {
+        @apply bg-green-500/20 text-green-200 p-2 rounded-md mb-4;
+    }
+
+    .error {
+        @apply bg-red-500/20 text-red-200 p-2 rounded-md mb-4;
+    }
+}
+
+/* Custom utilities */
+@layer utilities {
+    .glass {
+        @apply bg-white/10 backdrop-blur-md;
+    }
+
+    .glow {
+        @apply shadow-[0_0_15px_rgba(99,102,241,0.5)] hover:shadow-[0_0_25px_rgba(99,102,241,0.8)];
+    }
+
+    .animate-pulse-slow {
+        @apply animate-pulse duration-1000;
+    }
+}
+
+/* Specific page styles */
+.login-container {
+    @apply max-w-md mx-auto mt-20 p-8 glass rounded-xl shadow-2xl;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.dashboard-container {
+    @apply container mx-auto p-6;
+}
+
+/* Animated Particles */
+.particle {
+    @apply absolute bg-indigo-400 rounded-full opacity-50;
+    animation: float 15s infinite ease-in-out;
+}
+
+    .particle:nth-child(1) {
+        width: 10px;
+        height: 10px;
+        top: 20%;
+        left: 15%;
+        animation-delay: 0s;
+    }
+
+    .particle:nth-child(2) {
+        width: 15px;
+        height: 15px;
+        top: 50%;
+        left: 70%;
+        animation-delay: 2s;
+    }
+
+    .particle:nth-child(3) {
+        width: 12px;
+        height: 12px;
+        top: 70%;
+        left: 30%;
+        animation-delay: 4s;
+    }
+
+    .particle:nth-child(4) {
+        width: 8px;
+        height: 8px;
+        top: 30%;
+        left: 85%;
+        animation-delay: 6s;
+    }
+
+    .particle:nth-child(5) {
+        width: 10px;
+        height: 10px;
+        top: 10%;
+        left: 50%;
+        animation-delay: 8s;
+    }
+
+@keyframes float {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0.7;
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+    .login-container {
+        @apply mt-10 p-4;
+    }
+
+    .card {
+        @apply p-4;
+    }
+
+    .form-input {
+        @apply text-sm;
+    }
+
+    .table {
+        @apply text-sm;
+    }
+
+        .table td, .table th {
+            @apply px-2 py-1;
+        }
+}

@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Resident Dashboard";
+    var services = ViewBag.Services as List<CommunalSystem.Models.Price>;
+}
+<h1>Resident Dashboard</h1>
+
+<h2>Services</h2>
+<form method="post" action="@Url.Action("ViewServices", "Dashboard")">
+    <label>Search Name:</label><input type="text" name="search" />
+    <input type="submit" value="Search" />
+</form>
+<table>
+    <tr><th>Service ID</th><th>Price</th></tr>
+    @foreach (var service in services)
+    {
+        <tr><td>@service.ServiceId</td><td>@service.Value</td></tr>
+    }
+</table>
