@@ -6,13 +6,13 @@
 /* Custom base styles */
 @layer base {
     html {
-        @apply bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white font-sans;
+        @apply bg-gradient-to-br from-gray-900 via-indigo-950 to-purple-900 text-gray-100 font-sans;
         height: 100%;
     }
 
     body {
         @apply min-h-screen flex flex-col;
-        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+        background: linear-gradient(135deg, #0a0e1a 0%, #1a233a 50%, #2a1f4d 100%);
     }
 
     #__next {
@@ -27,7 +27,7 @@
     }
 
     .btn {
-        @apply px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-75 transition-all duration-200;
+        @apply px-4 py-2 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white rounded-lg hover:from-cyan-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-75 transition-all duration-200;
     }
 
     .form-group {
@@ -39,7 +39,7 @@
     }
 
     .form-input {
-        @apply w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors duration-200;
+        @apply w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors duration-200;
     }
 
     .table {
@@ -47,7 +47,7 @@
     }
 
         .table th {
-            @apply bg-gray-800/70 px-4 py-2 border-b border-gray-700;
+            @apply bg-gray-800/70 px-4 py-2 border-b border-gray-700 text-cyan-200;
         }
 
         .table td {
@@ -55,11 +55,19 @@
         }
 
     .success {
-        @apply bg-green-500/20 text-green-200 p-2 rounded-md mb-4;
+        @apply bg-green-500/20 text-green-200 p-2 rounded-md mb-4 animate-fade-in;
     }
 
     .error {
-        @apply bg-red-500/20 text-red-200 p-2 rounded-md mb-4;
+        @apply bg-red-500/20 text-red-200 p-2 rounded-md mb-4 animate-fade-in;
+    }
+
+    .dashboard-header {
+        @apply text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500;
+    }
+
+    .section-header {
+        @apply text-2xl mb-4 text-cyan-300;
     }
 }
 
@@ -70,7 +78,11 @@
     }
 
     .glow {
-        @apply shadow-[0_0_15px_rgba(99,102,241,0.5)] hover:shadow-[0_0_25px_rgba(99,102,241,0.8)];
+        @apply shadow-[0_0_15px_rgba(34,211,238,0.5)] hover:shadow-[0_0_25px_rgba(34,211,238,0.8)];
+    }
+
+    .animate-fade-in {
+        @apply animate-[fadeIn_0.5s_ease-out];
     }
 
     .animate-pulse-slow {
@@ -80,75 +92,15 @@
 
 /* Specific page styles */
 .login-container {
-    @apply max-w-md mx-auto mt-20 p-8 glass rounded-xl shadow-2xl;
-    animation: fadeIn 1s ease-in-out;
+    @apply max-w-md mx-auto mt-20 p-8 glass rounded-xl shadow-2xl glow;
+    animation: fadeIn 0.5s ease-out;
 }
 
 .dashboard-container {
     @apply container mx-auto p-6;
 }
 
-/* Animated Particles */
-.particle {
-    @apply absolute bg-indigo-400 rounded-full opacity-50;
-    animation: float 15s infinite ease-in-out;
-}
-
-    .particle:nth-child(1) {
-        width: 10px;
-        height: 10px;
-        top: 20%;
-        left: 15%;
-        animation-delay: 0s;
-    }
-
-    .particle:nth-child(2) {
-        width: 15px;
-        height: 15px;
-        top: 50%;
-        left: 70%;
-        animation-delay: 2s;
-    }
-
-    .particle:nth-child(3) {
-        width: 12px;
-        height: 12px;
-        top: 70%;
-        left: 30%;
-        animation-delay: 4s;
-    }
-
-    .particle:nth-child(4) {
-        width: 8px;
-        height: 8px;
-        top: 30%;
-        left: 85%;
-        animation-delay: 6s;
-    }
-
-    .particle:nth-child(5) {
-        width: 10px;
-        height: 10px;
-        top: 10%;
-        left: 50%;
-        animation-delay: 8s;
-    }
-
-@keyframes float {
-    0% {
-        transform: translateY(0) scale(1);
-    }
-
-    50% {
-        transform: translateY(-20px) scale(1.2);
-        opacity: 0.7;
-    }
-
-    100% {
-        transform: translateY(0) scale(1);
-    }
-}
-
+/* Animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -182,4 +134,12 @@
         .table td, .table th {
             @apply px-2 py-1;
         }
+
+    .dashboard-header {
+        @apply text-3xl;
+    }
+
+    .section-header {
+        @apply text-xl;
+    }
 }

@@ -36,7 +36,7 @@ namespace CommunalSystem.Controllers
             var user = _userRepo.FindByUsername(username);
             if (user == null) return RedirectToAction("Login", "Account");
 
-            var data = user.GetDashboardData();
+            var data = user.GetDashboardData(); // Polymorphism
 
             if (role == "admin")
             {
@@ -60,6 +60,7 @@ namespace CommunalSystem.Controllers
             return BadRequest("Invalid role");
         }
 
+        // Admin: Community Operations
         [HttpPost]
         public IActionResult CreateCommunity(string name)
         {
@@ -67,15 +68,127 @@ namespace CommunalSystem.Controllers
             try
             {
                 _adminService.CreateCommunity(name);
-                TempData["Success"] = "Community created";
+                TempData["Success"] = "Community created successfully";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["Error"] = $"Error creating community: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public IActionResult EditCommunity(int communityId, string name)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.EditCommunity(communityId, name);
+                TempData["Success"] = "Community updated successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error updating community: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteCommunity(int communityId)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.DeleteCommunity(communityId);
+                TempData["Success"] = "Community deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting community: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        // Admin: Service Operations
+        [HttpPost]
+        public IActionResult CreateService(string name)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.CreateService(name);
+                TempData["Success"] = "Service created successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error creating service: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult EditService(int serviceId, string name)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.EditService(serviceId, name);
+                TempData["Success"] = "Service updated successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error updating service: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteService(int serviceId)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.DeleteService(serviceId);
+                TempData["Success"] = "Service deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting service: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        // Admin: User Operations
+        [HttpPost]
+        public IActionResult CreateUser(string role, string firstName, string lastName, int? communityId = null)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.CreateUser(role, firstName, lastName, communityId);
+                TempData["Success"] = $"User created successfully (Username: {firstName}, Password: {lastName})";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error creating user: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteUser(int userId)
+        {
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try
+            {
+                _adminService.DeleteUser(userId);
+                TempData["Success"] = "User deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error deleting user: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        // Manager: Service Assignment Operations
         [HttpPost]
         public IActionResult AssignService(int communityId, int serviceId, decimal price)
         {
@@ -83,15 +196,32 @@ namespace CommunalSystem.Controllers
             try
             {
                 _managerService.AssignService(communityId, serviceId, price);
-                TempData["Success"] = "Service assigned and price set";
+                TempData["Success"] = "Service assigned and price set successfully";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["Error"] = $"Error assigning service: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public IActionResult EditPrice(int communityId, int serviceId, decimal price)
+        {
+            if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized();
+            try
+            {
+                _managerService.EditPrice(communityId, serviceId, price);
+                TempData["Success"] = "Price updated successfully";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error updating price: {ex.Message}";
+            }
+            return RedirectToAction("Index");
+        }
+
+        // Resident: View with Search
         [HttpPost]
         public IActionResult ViewServices(string search)
         {

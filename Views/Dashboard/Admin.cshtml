@@ -5,9 +5,9 @@
     var users = ViewBag.Users as List<CommunalSystem.Models.User>;
 }
 <div class="dashboard-container">
-    <h1 class="text-4xl font-bold mb-6 text-indigo-300">Admin Dashboard</h1>
+    <h1 class="dashboard-header">Admin Dashboard</h1>
     <div class="card">
-        <h2 class="text-2xl mb-4">Communities</h2>
+        <h2 class="section-header">Communities</h2>
         <ul class="list-disc pl-5 mb-4">
             @foreach (var community in communities)
             {
@@ -32,7 +32,7 @@
             <button type="submit" class="btn">Create</button>
         </form>
 
-        <h2 class="text-2xl mb-4">Services</h2>
+        <h2 class="section-header">Services</h2>
         <ul class="list-disc pl-5 mb-4">
             @foreach (var service in services)
             {
@@ -57,8 +57,8 @@
             <button type="submit" class="btn">Create</button>
         </form>
 
-        <h2 class="text-2xl mb-4">Users</h2>
-        <ul class="list-disc pl-5">
+        <h2 class="section-header">Users</h2>
+        <ul class="list-disc pl-5 mb-4">
             @foreach (var user in users)
             {
                 <li class="mb-2">
@@ -77,17 +77,17 @@
             </div>
             <div class="form-group">
                 <label class="form-label">First Name (Username):</label>
-                <input type="text" name="first_name" class="form-input" />
+                <input type="text" name="firstName" class="form-input" />
             </div>
             <div class="form-group">
                 <label class="form-label">Last Name (Password):</label>
-                <input type="text" name="last_name" class="form-input" />
+                <input type="text" name="lastName" class="form-input" />
             </div>
             <div class="form-group">
                 <label class="form-label">Community ID (for residents):</label>
-                <input type="number" name="community_id" class="form-input" />
+                <input type="number" name="communityId" class="form-input" />
             </div>
             <button type="submit" class="btn">Create</button>
         </form>
     </div>
-</div>>
+</div>

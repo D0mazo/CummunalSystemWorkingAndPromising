@@ -3,32 +3,34 @@
     var communities = ViewBag.Communities as List<CommunalSystem.Models.Community>;
     var services = ViewBag.Services as List<CommunalSystem.Models.Service>;
 }
-<h1>Manager Dashboard</h1>
-
-<h2>Assign Service</h2>
-<form method="post" action="@Url.Action("AssignService", "Dashboard")">
-    <label>Community:</label>
-    <select name="communityId">
-        @foreach (var c in communities)
-        {
-            <option value="@c.Id">@c.Name</option>
-        }
-    </select><br />
-    <label>Service:</label>
-    <select name="serviceId">
-        @foreach (var s in services)
-        {
-            <option value="@s.Id">@s.Name</option>
-        }
-    </select><br />
-    <label>Price:</label><input type="number" step="0.01" name="price" /><br />
-    <input type="submit" value="Assign" />
-</form>
-
-<h2>Edit Price</h2>
-<form method="post" action="@Url.Action("EditPrice", "Dashboard")">
-    <label>Community ID:</label><input type="number" name="communityId" /><br />
-    <label>Service ID:</label><input type="number" name="serviceId" /><br />
-    <label>Price:</label><input type="number" step="0.01" name="price" /><br />
-    <input type="submit" value="Update" />
-</form>
+<div class="dashboard-container">
+    <h1 class="dashboard-header">Manager Dashboard</h1>
+    <div class="card">
+        <h2 class="section-header">Assign Service</h2>
+        <form method="post" action="@Url.Action("AssignService", "Dashboard")" class="space-y-4">
+            <div class="form-group">
+                <label class="form-label">Community:</label>
+                <select name="communityId" class="form-input">
+                    @foreach (var c in communities)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Service:</label>
+                <select name="serviceId" class="form-input">
+                    @foreach (var s in services)
+                    {
+                        <option value="@s.Id">@s.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Price:</label>
+                <input type="number" step="0.01" name="price" class="form-input" />
+            </div>
+            <button type="submit" class="btn w-full">Assign</button>
+        </form>
+    </div>
+</div>
