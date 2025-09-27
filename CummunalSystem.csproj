@@ -13,4 +13,10 @@
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\css\styles.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

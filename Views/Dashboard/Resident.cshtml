@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Resident Dashboard";
     var services = ViewBag.Services as List<CommunalSystem.Models.Price>;
+    <link href="~/css/styles.css" rel="stylesheet" />
 }
+
 <div class="dashboard-container">
     <h1 class="dashboard-header">Resident Dashboard</h1>
     <div class="card">
@@ -20,7 +22,10 @@
             <tbody>
                 @foreach (var service in services)
                 {
-                    <tr><td>@service.ServiceId</td><td>@service.Value</td></tr>
+                    <tr>
+                        <td>@service.ServiceId</td>
+                        <td>@service.Value</td>
+                    </tr>
                 }
             </tbody>
         </table>

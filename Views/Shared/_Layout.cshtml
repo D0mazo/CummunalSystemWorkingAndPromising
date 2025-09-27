@@ -3,14 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
-    <!-- Tailwind CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Custom Styles -->
     <link href="~/css/styles.css" rel="stylesheet" />
-    <!-- Add browser refresh script for hot reload (optional) -->
-    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 </head>
 <body>
+    <!-- Show success/error messages -->
     @if (TempData["Success"] != null)
     {
         <div class="success">@TempData["Success"]</div>
@@ -19,10 +15,16 @@
     {
         <div class="error">@TempData["Error"]</div>
     }
+
+    <!-- Main content from views -->
     @RenderBody()
+
+    <!-- Logout link if user is logged in -->
     @if (Context.Session.GetString("Role") != null)
     {
-        <a href="@Url.Action("Logout", "Account")">Logout</a>
+        <a href="@Url.Action("Logout", "Account")" class="text-blue-500 hover:underline">Logout</a>
     }
+
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

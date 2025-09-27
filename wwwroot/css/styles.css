@@ -1,145 +1,399 @@
-﻿/* Import Tailwind CSS via CDN (base styles) */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom base styles */
-@layer base {
-    html {
-        @apply bg-gradient-to-br from-gray-900 via-indigo-950 to-purple-900 text-gray-100 font-sans;
-        height: 100%;
-    }
-
-    body {
-        @apply min-h-screen flex flex-col;
-        background: linear-gradient(135deg, #0a0e1a 0%, #1a233a 50%, #2a1f4d 100%);
-    }
-
-    #__next {
-        @apply flex-grow;
-    }
+﻿/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Custom components */
-@layer components {
-    .card {
-        @apply bg-white/10 backdrop-blur-md rounded-xl shadow-lg p-6 border border-white/20 hover:shadow-xl transition-all duration-300;
-    }
-
-    .btn {
-        @apply px-4 py-2 bg-gradient-to-r from-cyan-500 to-indigo-600 text-white rounded-lg hover:from-cyan-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-opacity-75 transition-all duration-200;
-    }
-
-    .form-group {
-        @apply mb-4;
-    }
-
-    .form-label {
-        @apply block text-sm font-medium text-gray-300;
-    }
-
-    .form-input {
-        @apply w-full px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-colors duration-200;
-    }
-
-    .table {
-        @apply w-full text-left border-collapse;
-    }
-
-        .table th {
-            @apply bg-gray-800/70 px-4 py-2 border-b border-gray-700 text-cyan-200;
-        }
-
-        .table td {
-            @apply px-4 py-2 border-b border-gray-700;
-        }
-
-    .success {
-        @apply bg-green-500/20 text-green-200 p-2 rounded-md mb-4 animate-fade-in;
-    }
-
-    .error {
-        @apply bg-red-500/20 text-red-200 p-2 rounded-md mb-4 animate-fade-in;
-    }
-
-    .dashboard-header {
-        @apply text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500;
-    }
-
-    .section-header {
-        @apply text-2xl mb-4 text-cyan-300;
-    }
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    line-height: 1.5;
 }
 
-/* Custom utilities */
-@layer utilities {
-    .glass {
-        @apply bg-white/10 backdrop-blur-md;
-    }
-
-    .glow {
-        @apply shadow-[0_0_15px_rgba(34,211,238,0.5)] hover:shadow-[0_0_25px_rgba(34,211,238,0.8)];
-    }
-
-    .animate-fade-in {
-        @apply animate-[fadeIn_0.5s_ease-out];
-    }
-
-    .animate-pulse-slow {
-        @apply animate-pulse duration-1000;
-    }
-}
-
-/* Specific page styles */
-.login-container {
-    @apply max-w-md mx-auto mt-20 p-8 glass rounded-xl shadow-2xl glow;
-    animation: fadeIn 0.5s ease-out;
-}
-
+/* ==========================================================================
+   Layout Containers
+   ========================================================================== */
+.login-container,
 .dashboard-container {
-    @apply container mx-auto p-6;
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2rem;
+    position: relative;
+    border-radius: 1rem;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
+/* Glassmorphism Effect for Containers */
+.bg-glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+.dashboard-header {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #22d3ee;
+    text-align: center;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+}
+
+.section-header {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #22d3ee;
+    margin-bottom: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #a5b4fc;
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   Form Components
+   ========================================================================== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: #e0e0e0;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .form-input:focus {
+        outline: none;
+        border-color: #22d3ee;
+        box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
     }
 
-    to {
+    .form-input::placeholder {
+        color: #9ca3af;
+        opacity: 0.7;
+    }
+
+select.form-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a5b4fc' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1em;
+}
+
+/* ==========================================================================
+   Button Components
+   ========================================================================== */
+.btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(90deg, #06b6d4, #3b82f6);
+    color: #ffffff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
+    }
+
+    .btn.w-full {
+        width: 100%;
+    }
+
+/* ==========================================================================
+   Card Component
+   ========================================================================== */
+.card {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 2rem;
+}
+
+/* ==========================================================================
+   Table Component
+   ========================================================================== */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+    .table th,
+    .table td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .table th {
+        background: rgba(255, 255, 255, 0.08);
+        color: #22d3ee;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    .table td {
+        color: #d1d5db;
+    }
+
+/* ==========================================================================
+   List Component
+   ========================================================================== */
+.list-disc {
+    list-style-type: disc;
+    margin-bottom: 1rem;
+}
+
+    .list-disc li {
+        margin-bottom: 0.5rem;
+    }
+
+/* ==========================================================================
+   Message Components
+   ========================================================================== */
+.success,
+.error {
+    padding: 1rem;
+    margin: 1rem auto;
+    border-radius: 0.5rem;
+    among text-align: center;
+    max-width: 600px;
+}
+
+.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ==========================================================================
+   Particle Animation (Login Page)
+   ========================================================================== */
+.particle {
+    position: absolute;
+    background: rgba(34, 211, 238, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particle 12s infinite linear;
+}
+
+    .particle:nth-child(1) {
+        width: 12px;
+        height: 12px;
+        top: 15%;
+        left: 25%;
+        animation-duration: 14s;
+    }
+
+    .particle:nth-child(2) {
+        width: 18px;
+        height: 18px;
+        top: 55%;
+        left: 65%;
+        animation-duration: 10s;
+    }
+
+    .particle:nth-child(3) {
+        width: 10px;
+        height: 10px;
+        top: 75%;
+        left: 35%;
+        animation-duration: 16s;
+    }
+
+@keyframes particle {
+    0% {
+        transform: translate(0, 0);
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(120px, 120px);
+        opacity: 0.6;
+    }
+}
+
+/* ==========================================================================
+   Animation Utilities
+   ========================================================================== */
+.animate-pulse-slow {
+    animation: pulse 4s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% {
         opacity: 1;
-        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 0.6;
     }
 }
 
-/* Responsive design */
-@media (max-width: 640px) {
-    .login-container {
-        @apply mt-10 p-4;
-    }
+/* ==========================================================================
+   Utility Classes (Provided in Razor Views)
+   ========================================================================== */
+.text-gray-200 {
+    color: #d1d5db;
+}
 
-    .card {
-        @apply p-4;
-    }
+.text-red-400 {
+    color: #f87171;
+}
 
-    .form-input {
-        @apply text-sm;
-    }
+.text-red-300 {
+    color: #fca5a5;
+}
 
-    .table {
-        @apply text-sm;
-    }
+.text-blue-500 {
+    color: #3b82f6;
+}
 
-        .table td, .table th {
-            @apply px-2 py-1;
-        }
+.w-full {
+    width: 100%;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.ml-2 {
+    margin-left: 0.5rem;
+}
+
+.ml-4 {
+    margin-left: 1rem;
+}
+
+.pl-5 {
+    padding-left: 1.25rem;
+}
+
+.py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.space-y-4 > :not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.space-y-6 > :not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.w-1/3 {
+    width: 33.333333%;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+@media (max-width: 768px) {
+    .login-container,
+    .dashboard-container {
+        margin: 1.5rem;
+        padding: 1.5rem;
+    }
 
     .dashboard-header {
-        @apply text-3xl;
+        font-size: 2.25rem;
     }
 
     .section-header {
-        @apply text-xl;
+        font-size: 1.25rem;
+    }
+
+    .form-input,
+    .btn {
+        font-size: 0.95rem;
+        padding: 0.65rem 1rem;
+    }
+
+    .w-1/3 {
+        width: 100%;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-header {
+        font-size: 1.75rem;
+    }
+
+    .section-header {
+        font-size: 1.1rem;
+    }
+
+    .form-input,
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .card {
+        padding: 1rem;
     }
 }
