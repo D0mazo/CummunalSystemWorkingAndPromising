@@ -17,32 +17,49 @@ namespace CommunalSystem.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            ViewBag.Message = "Šis puslapis skirtas prisijungti prie komunalinių paslaugų sistemos. Įveskite savo vartotojo vardą ir slaptažodį.";
             return View();
         }
 
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            var user = _userRepo.FindByUsername(username);
-            if (user != null && user.Password == password)
+            try
             {
+                var user = _userRepo.FindByUsername(username);
+                if (user == null || user.Password != password)
+                {
+                    TempData["Error"] = "Neteisingi prisijungimo duomenys. Patikrinkite vartotojo vardą ir slaptažodį.";
+                    return View();
+                }
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("Role", user.Role);
                 HttpContext.Session.SetString("Username", user.Username);
                 if (user.CommunityId.HasValue)
                     HttpContext.Session.SetInt32("CommunityId", user.CommunityId.Value);
-                TempData["Success"] = "Login successful";
+                TempData["Success"] = "Prisijungta sėkmingai! Jūs nukreipiamas į pagrindinį puslapį.";
                 return RedirectToAction("Index", "Dashboard");
             }
-            TempData["Error"] = "Invalid credentials";
-            return View();
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Prisijungimo klaida: {ex.Message}";
+                return View();
+            }
         }
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
-            TempData["Success"] = "Logged out";
-            return RedirectToAction("Login");
+            try
+            {
+                HttpContext.Session.Clear();
+                TempData["Success"] = "Atsijungta sėkmingai! Jūs nukreipiamas į prisijungimo puslapį.";
+                return RedirectToAction("Login");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Atsijungimo klaida: {ex.Message}";
+                return RedirectToAction("Login");
+            }
         }
     }
 }

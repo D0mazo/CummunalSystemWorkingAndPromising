@@ -1,10 +1,12 @@
 ﻿@{
     ViewData["Title"] = "Resident Dashboard";
-    var services = ViewBag.Services as List<CommunalSystem.Models.ServicePrice>; // Updated to ServicePrice
+    var services = ViewBag.Services as List<CommunalSystem.Models.ServicePrice>;
+    var message = ViewBag.Message ?? "Šis puslapis skirtas gyventojui peržiūrėti savo bendrijos paslaugas ir kainas.";
     <link href="~/css/styles.css" rel="stylesheet" />
 }
 <div class="dashboard-container">
     <h1 class="dashboard-header">Resident Dashboard</h1>
+    <p class="text-gray-400 mb-6">@message</p>
     <div class="card">
         <h2 class="section-header">Services</h2>
         <form method="post" action="@Url.Action("ViewServices", "Dashboard")" class="mb-4">
@@ -22,11 +24,23 @@
                 @foreach (var service in services)
                 {
                     <tr>
-                        <td>@service.ServiceName</td> <!-- Use ServiceName instead of Name -->
-                        <td>@service.Price</td> <!-- Use Price instead of Value -->
+                        <td>@service.ServiceName</td>
+                        <td>@service.Price</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="success mt-4">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="error mt-4">@TempData["Error"]</div>
+    }
+    @if (TempData["Message"] != null)
+    {
+        <div class="text-gray-400 mt-4">@TempData["Message"]</div>
+    }
 </div>

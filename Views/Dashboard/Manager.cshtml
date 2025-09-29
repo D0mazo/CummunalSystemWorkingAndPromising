@@ -2,10 +2,12 @@
     ViewData["Title"] = "Manager Dashboard";
     var communities = ViewBag.Communities as List<CommunalSystem.Models.Community>;
     var services = ViewBag.Services as List<CommunalSystem.Models.Service>;
+    var message = ViewBag.Message ?? "Šis puslapis skirtas vadybininkui priskirti paslaugas ir nustatyti kainas.";
     <link href="~/css/styles.css" rel="stylesheet" />
 }
 <div class="dashboard-container">
     <h1 class="dashboard-header">Manager Dashboard</h1>
+    <p class="text-gray-400 mb-6">@message</p>
     <div class="card">
         <h2 class="section-header">Assign Service</h2>
         <form method="post" action="@Url.Action("AssignService", "Dashboard")" class="space-y-4">
@@ -34,4 +36,12 @@
             <button type="submit" class="btn w-full">Assign</button>
         </form>
     </div>
+    @if (TempData["Success"] != null)
+    {
+        <div class="success mt-4">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="error mt-4">@TempData["Error"]</div>
+    }
 </div>

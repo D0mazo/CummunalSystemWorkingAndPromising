@@ -28,51 +28,71 @@ namespace CommunalSystem.Controllers
 
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("Role") == null)
+            try
+            {
+                if (HttpContext.Session.GetString("Role") == null)
+                    return RedirectToAction("Login", "Account");
+
+                var role = HttpContext.Session.GetString("Role");
+                var username = HttpContext.Session.GetString("Username");
+                var user = _userRepo.FindByUsername(username);
+                if (user == null)
+                {
+                    TempData["Error"] = "Vartotojas nerastas. Prašome prisijungti iš naujo.";
+                    return RedirectToAction("Login", "Account");
+                }
+
+                ViewBag.Message = role switch
+                {
+                    "admin" => "Šis puslapis skirtas administratoriui valdyti bendrijas, paslaugas ir vartotojus.",
+                    "manager" => "Šis puslapis skirtas vadybininkui priskirti paslaugas ir nustatyti kainas.",
+                    "resident" => "Šis puslapis skirtas gyventojui peržiūrėti savo bendrijos paslaugas ir kainas.",
+                    _ => "Netinkamas vaidmuo."
+                };
+
+                if (role == "admin")
+                {
+                    ViewBag.Communities = _communityRepo.GetAll();
+                    ViewBag.Services = _serviceRepo.GetAll();
+                    ViewBag.Users = _userRepo.GetAll();
+                    return View("Admin");
+                }
+                else if (role == "manager")
+                {
+                    ViewBag.Communities = _communityRepo.GetAll();
+                    ViewBag.Services = _serviceRepo.GetAll();
+                    return View("Manager");
+                }
+                else if (role == "resident")
+                {
+                    var communityId = HttpContext.Session.GetInt32("CommunityId").Value;
+                    ViewBag.Services = _residentService.ViewServices(communityId);
+                    return View("Resident");
+                }
+                return BadRequest("Netinkamas vaidmuo.");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Klaida įkeliant dashboard: {ex.Message}";
                 return RedirectToAction("Login", "Account");
-
-            var role = HttpContext.Session.GetString("Role");
-            var username = HttpContext.Session.GetString("Username");
-            var user = _userRepo.FindByUsername(username);
-            if (user == null) return RedirectToAction("Login", "Account");
-
-            var data = user.GetDashboardData(); // Polymorphism
-
-            if (role == "admin")
-            {
-                ViewBag.Communities = _communityRepo.GetAll();
-                ViewBag.Services = _serviceRepo.GetAll();
-                ViewBag.Users = _userRepo.GetAll();
-                return View("Admin");
             }
-            else if (role == "manager")
-            {
-                ViewBag.Communities = _communityRepo.GetAll();
-                ViewBag.Services = _serviceRepo.GetAll();
-                return View("Manager");
-            }
-            else if (role == "resident")
-            {
-                var communityId = HttpContext.Session.GetInt32("CommunityId").Value;
-                ViewBag.Services = _residentService.ViewServices(communityId);
-                return View("Resident");
-            }
-            return BadRequest("Invalid role");
         }
 
         // Admin: Community Operations
         [HttpPost]
         public IActionResult CreateCommunity(string name)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentException("Bendrijos pavadinimas negali būti tuščias.");
                 _adminService.CreateCommunity(name);
-                TempData["Success"] = "Community created successfully";
+                TempData["Success"] = "Nauja bendrija pridėta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error creating community: {ex.Message}";
+                TempData["Error"] = $"Klaida kuriant bendriją: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -80,30 +100,32 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult EditCommunity(int communityId, string name)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentException("Bendrijos pavadinimas negali būti tuščias.");
                 _adminService.EditCommunity(communityId, name);
-                TempData["Success"] = "Community updated successfully";
+                TempData["Success"] = "Bendrija atnaujinta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error updating community: {ex.Message}";
+                TempData["Error"] = $"Klaida atnaujinant bendriją: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
 
         public IActionResult DeleteCommunity(int communityId)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
                 _adminService.DeleteCommunity(communityId);
-                TempData["Success"] = "Community deleted successfully";
+                TempData["Success"] = "Bendrija ištrinta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error deleting community: {ex.Message}";
+                TempData["Error"] = $"Klaida trinant bendriją: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -112,15 +134,17 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult CreateService(string name)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentException("Paslaugos pavadinimas negali būti tuščias.");
                 _adminService.CreateService(name);
-                TempData["Success"] = "Service created successfully";
+                TempData["Success"] = "Nauja paslauga pridėta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error creating service: {ex.Message}";
+                TempData["Error"] = $"Klaida kuriant paslaugą: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -128,30 +152,35 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult EditService(int serviceId, string name)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                if (string.IsNullOrWhiteSpace(name))
+                    throw new ArgumentException("Paslaugos pavadinimas negali būti tuščias.");
                 _adminService.EditService(serviceId, name);
-                TempData["Success"] = "Service updated successfully";
+                TempData["Success"] = "Paslauga atnaujinta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error updating service: {ex.Message}";
+                TempData["Error"] = $"Klaida atnaujinant paslaugą: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
 
         public IActionResult DeleteService(int serviceId)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                var service = _serviceRepo.FindById(serviceId);
+                if (service == null)
+                    throw new InvalidOperationException("Paslauga nerasta.");
                 _adminService.DeleteService(serviceId);
-                TempData["Success"] = "Service deleted successfully";
+                TempData["Success"] = "Paslauga ištrinta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error deleting service: {ex.Message}";
+                TempData["Error"] = $"Klaida trinant paslaugą: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -160,30 +189,37 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult CreateUser(string role, string firstName, string lastName, int? communityId = null)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+                    throw new ArgumentException("Vardas ir pavardė negali būti tušti.");
+                if (!new[] { "manager", "resident" }.Contains(role))
+                    throw new ArgumentException("Netinkamas vaidmuo.");
                 _adminService.CreateUser(role, firstName, lastName, communityId);
-                TempData["Success"] = $"User created successfully (Username: {firstName}, Password: {lastName})";
+                TempData["Success"] = $"Naujas vartotojas pridėtas sėkmingai! (Vartotojo vardas: {firstName}, Slaptažodis: {lastName})";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error creating user: {ex.Message}";
+                TempData["Error"] = $"Klaida kuriant vartotoją: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
 
         public IActionResult DeleteUser(int userId)
         {
-            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized("Neturite administratoriaus teisių.");
             try
             {
+                var user = _userRepo.GetAll().FirstOrDefault(u => u.Id == userId);
+                if (user == null)
+                    throw new InvalidOperationException("Vartotojas nerastas.");
                 _adminService.DeleteUser(userId);
-                TempData["Success"] = "User deleted successfully";
+                TempData["Success"] = "Vartotojas ištrintas sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error deleting user: {ex.Message}";
+                TempData["Error"] = $"Klaida trinant vartotoją: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -192,15 +228,21 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult AssignService(int communityId, int serviceId, decimal price)
         {
-            if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized("Neturite vadybininko teisių.");
             try
             {
+                var service = _serviceRepo.FindById(serviceId);
+                if (service == null)
+                    throw new InvalidOperationException("Paslauga nerasta.");
+                var community = _communityRepo.FindById(communityId);
+                if (community == null)
+                    throw new InvalidOperationException("Bendrija nerasta.");
                 _managerService.AssignService(communityId, serviceId, price);
-                TempData["Success"] = "Service assigned and price set successfully";
+                TempData["Success"] = "Paslauga priskirta ir kaina nustatyta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error assigning service: {ex.Message}";
+                TempData["Error"] = $"Klaida priskiriant paslaugą: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -208,15 +250,15 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult EditPrice(int communityId, int serviceId, decimal price)
         {
-            if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized("Neturite vadybininko teisių.");
             try
             {
                 _managerService.EditPrice(communityId, serviceId, price);
-                TempData["Success"] = "Price updated successfully";
+                TempData["Success"] = "Kaina atnaujinta sėkmingai!";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Error updating price: {ex.Message}";
+                TempData["Error"] = $"Klaida atnaujinant kainą: {ex.Message}";
             }
             return RedirectToAction("Index");
         }
@@ -225,16 +267,17 @@ namespace CommunalSystem.Controllers
         [HttpPost]
         public IActionResult ViewServices(string search)
         {
-            if (HttpContext.Session.GetString("Role") != "resident") return Unauthorized();
+            if (HttpContext.Session.GetString("Role") != "resident") return Unauthorized("Neturite gyventojo teisių.");
             try
             {
                 var communityId = HttpContext.Session.GetInt32("CommunityId").Value;
                 ViewBag.Services = _residentService.ViewServices(communityId, search);
+                TempData["Message"] = "Paslaugų sąrašas atnaujintas pagal jūsų paiešką.";
                 return View("Resident");
             }
             catch (Exception ex)
             {
-                TempData["Error"] = ex.Message;
+                TempData["Error"] = $"Klaida peržiūrint paslaugas: {ex.Message}";
                 return RedirectToAction("Index");
             }
         }
