@@ -1,271 +1,235 @@
-﻿/* ==========================================================================
-   Base Styles
-   ========================================================================== */
+﻿/*
+  styles.css
+  Enhanced styling for Login + Dashboards
+  Improved with dark mode, better responsiveness, refined animations, and accessibility
+*/
+
+:root {
+    --bg: linear-gradient(135deg, #eef2f7, #f6f7fb);
+    --bg-dark: linear-gradient(135deg, #1f2937, #374151);
+    --surface: #ffffff;
+    --surface-dark: #2d3748;
+    --muted: #6b7280;
+    --muted-dark: #9ca3af;
+    --text: #0f172a;
+    --text-dark: #e5e7eb;
+    --primary: #1f6feb;
+    --primary-600: #1558c1;
+    --accent: #06b6d4;
+    --success: #16a34a;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --glass: rgba(255, 255, 255, 0.65);
+    --glass-dark: rgba(31, 41, 55, 0.65);
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 40px;
+    --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    --base-font-size: 16px;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-1: 0 2px 6px rgba(0, 0, 0, 0.08);
+    --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --shadow-3: 0 12px 36px rgba(0, 0, 0, 0.16);
+    --transition: all 0.3s ease;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: var(--bg-dark);
+        --surface: var(--surface-dark);
+        --muted: var(--muted-dark);
+        --text: var(--text-dark);
+        --glass: var(--glass-dark);
+    }
+}
+
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    font-size: var(--base-font-size);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    color: #e0e0e0;
-    min-height: 100vh;
-    overflow-x: hidden;
-    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--space-lg);
 }
 
-/* ==========================================================================
-   Layout Containers
-   ========================================================================== */
-.login-container,
-.dashboard-container {
-    max-width: 900px;
-    margin: 3rem auto;
-    padding: 2rem;
+/* Containers */
+.dashboard-container,
+.login-container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
     position: relative;
-    border-radius: 1rem;
 }
 
-/* Glassmorphism Effect for Containers */
-.bg-glass {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 1rem;
-    padding: 2rem;
-}
-
-/* ==========================================================================
-   Typography
-   ========================================================================== */
+/* Headers */
 .dashboard-header {
-    font-size: 2.75rem;
+    font-size: clamp(1.75rem, 5vw, 2.5rem);
     font-weight: 700;
-    color: #22d3ee;
     text-align: center;
-    margin-bottom: 2rem;
-    text-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.5px;
+    color: var(--primary);
 }
 
 .section-header {
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
     font-weight: 600;
-    color: #22d3ee;
-    margin-bottom: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    margin-bottom: var(--space-sm);
+    color: var(--primary);
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: var(--space-md);
 }
 
 .form-label {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #a5b4fc;
-    margin-bottom: 0.5rem;
-}
-
-/* ==========================================================================
-   Form Components
-   ========================================================================== */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--muted);
 }
 
 .form-input {
-    padding: 0.75rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    color: #e0e0e0;
-    font-size: 1rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(15, 23, 36, 0.1);
+    background: var(--surface);
+    transition: var(--transition);
+    font-size: var(--base-font-size);
 }
 
     .form-input:focus {
+        border-color: var(--primary);
         outline: none;
-        border-color: #22d3ee;
-        box-shadow: 0 0 8px rgba(34, 211, 238, 0.4);
+        box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.25);
     }
 
-    .form-input::placeholder {
-        color: #9ca3af;
-        opacity: 0.7;
-    }
-
-select.form-input {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a5b4fc' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 0.75rem center;
-    background-size: 1em;
-}
-
-/* ==========================================================================
-   Button Components
-   ========================================================================== */
+/* Buttons */
 .btn {
-    padding: 0.75rem 1.5rem;
-    background: linear-gradient(90deg, #06b6d4, #3b82f6);
-    color: #ffffff;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    background-size: 200% auto;
+    text-decoration: none;
 }
 
     .btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(34, 211, 238, 0.4);
+        box-shadow: var(--shadow-2);
+        background-position: right center;
+    }
+
+    .btn:focus {
+        outline: 3px solid rgba(31, 111, 235, 0.2);
     }
 
     .btn.w-full {
         width: 100%;
+        text-align: center;
     }
 
-/* ==========================================================================
-   Card Component
-   ========================================================================== */
-.card {
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    margin-bottom: 2rem;
+/* Success/Error */
+.success,
+.error {
+    padding: 14px 18px;
+    margin: var(--space-sm) 0;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-align: center;
+    box-shadow: var(--shadow-1);
 }
 
-/* ==========================================================================
-   Table Component
-   ========================================================================== */
+.success {
+    background: rgba(22, 163, 74, 0.1);
+    color: var(--success);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+}
+
+.error {
+    background: rgba(220, 38, 38, 0.1);
+    color: var(--danger);
+    border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+/* Card */
+.card {
+    background: var(--surface);
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-1);
+    margin-bottom: var(--space-lg);
+    transition: var(--transition);
+}
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-2);
+    }
+
+/* Tables */
 .table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1rem;
+    margin-top: var(--space-md);
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-1);
 }
 
     .table th,
     .table td {
-        padding: 0.75rem 1rem;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.95rem;
     }
 
-    .table th {
-        background: rgba(255, 255, 255, 0.08);
-        color: #22d3ee;
-        font-weight: 600;
-        text-transform: uppercase;
-        font-size: 0.9rem;
+    .table thead {
+        background: linear-gradient(135deg, #eaf1ff, #f6faff);
     }
 
-    .table td {
-        color: #d1d5db;
+    .table tr:hover td {
+        background: rgba(31, 111, 235, 0.05);
     }
 
-/* ==========================================================================
-   List Component
-   ========================================================================== */
-.list-disc {
-    list-style-type: disc;
-    margin-bottom: 1rem;
+/* Glow & animations */
+.glow {
+    box-shadow: 0 0 18px rgba(31, 111, 235, 0.25);
 }
 
-    .list-disc li {
-        margin-bottom: 0.5rem;
-    }
-
-/* ==========================================================================
-   Message Components
-   ========================================================================== */
-.success,
-.error {
-    padding: 1rem;
-    margin: 1rem auto;
-    border-radius: 0.5rem;
-    among text-align: center;
-    max-width: 600px;
-}
-
-.success {
-    background: rgba(34, 197, 94, 0.15);
-    color: #34d399;
-    border: 1px solid rgba(34, 197, 94, 0.3);
-}
-
-.error {
-    background: rgba(239, 68, 68, 0.15);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-/* ==========================================================================
-   Particle Animation (Login Page)
-   ========================================================================== */
-.particle {
-    position: absolute;
-    background: rgba(34, 211, 238, 0.6);
-    border-radius: 50%;
-    pointer-events: none;
-    animation: particle 12s infinite linear;
-}
-
-    .particle:nth-child(1) {
-        width: 12px;
-        height: 12px;
-        top: 15%;
-        left: 25%;
-        animation-duration: 14s;
-    }
-
-    .particle:nth-child(2) {
-        width: 18px;
-        height: 18px;
-        top: 55%;
-        left: 65%;
-        animation-duration: 10s;
-    }
-
-    .particle:nth-child(3) {
-        width: 10px;
-        height: 10px;
-        top: 75%;
-        left: 35%;
-        animation-duration: 16s;
-    }
-
-@keyframes particle {
-    0% {
-        transform: translate(0, 0);
-        opacity: 0.6;
-    }
-
-    50% {
-        opacity: 0.3;
-    }
-
-    100% {
-        transform: translate(120px, 120px);
-        opacity: 0.6;
-    }
-}
-
-/* ==========================================================================
-   Animation Utilities
-   ========================================================================== */
-.animate-pulse-slow {
-    animation: pulse 4s infinite ease-in-out;
-}
-
-@keyframes pulse {
+@keyframes pulseSlow {
     0%, 100% {
         opacity: 1;
     }
@@ -275,125 +239,234 @@ select.form-input {
     }
 }
 
-/* ==========================================================================
-   Utility Classes (Provided in Razor Views)
-   ========================================================================== */
-.text-gray-200 {
-    color: #d1d5db;
+.animate-pulse-slow {
+    animation: pulseSlow 2s infinite ease-in-out;
 }
 
-.text-red-400 {
-    color: #f87171;
+/* Particle background */
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: floatParticle 6s infinite ease-in-out;
+    opacity: 0.65;
+}
+
+    .particle:nth-child(2) {
+        top: 20%;
+        left: 40%;
+        animation-delay: 2s;
+    }
+
+    .particle:nth-child(3) {
+        top: 60%;
+        left: 70%;
+        animation-delay: 4s;
+    }
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* Text colors */
+.text-gray-200 {
+    color: #e5e7eb;
+}
+
+.text-gray-400 {
+    color: #9ca3af;
 }
 
 .text-red-300 {
     color: #fca5a5;
 }
 
+.text-red-400 {
+    color: #f87171;
+}
+
 .text-blue-500 {
     color: #3b82f6;
 }
 
-.w-full {
-    width: 100%;
-}
-
+/* Utilities */
 .mb-2 {
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-sm);
 }
 
 .mb-4 {
-    margin-bottom: 1rem;
+    margin-bottom: var(--space-md);
 }
 
 .mb-6 {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--space-lg);
+}
+
+.mt-4 {
+    margin-top: var(--space-md);
 }
 
 .ml-2 {
-    margin-left: 0.5rem;
+    margin-left: var(--space-sm);
 }
 
 .ml-4 {
-    margin-left: 1rem;
-}
-
-.pl-5 {
-    padding-left: 1.25rem;
-}
-
-.py-3 {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-}
-
-.space-y-4 > :not(:last-child) {
-    margin-bottom: 1rem;
-}
-
-.space-y-6 > :not(:last-child) {
-    margin-bottom: 1.5rem;
+    margin-left: var(--space-md);
 }
 
 .inline-block {
     display: inline-block;
 }
 
-.w-1/3 {
-    width: 33.333333%;
+.w-1\/3 {
+    width: 33.333%;
 }
 
-/* ==========================================================================
-   Responsive Design
-   ========================================================================== */
+.text-center {
+    text-align: center;
+}
+
+/* Dashboard alignment */
+.dashboard-container > .card {
+    margin-top: var(--space-md);
+}
+
+.dashboard-container ul {
+    margin-bottom: var(--space-md);
+}
+
+.dashboard-container li {
+    margin-bottom: var(--space-sm);
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+}
+
+    .dashboard-container li:hover {
+        background: rgba(31, 111, 235, 0.05);
+    }
+
+/* Glass effect */
+.bg-glass {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* Logout link */
+a.text-blue-500 {
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+    a.text-blue-500:hover {
+        text-decoration: underline;
+        color: var(--primary-600);
+    }
+
+/* Center login */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    position: relative;
+    padding: var(--space-lg);
+}
+
+    .login-container form {
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .login-container h1 {
+        color: var(--primary);
+    }
+
+/* Responsive design */
 @media (max-width: 768px) {
-    .login-container,
-    .dashboard-container {
-        margin: 1.5rem;
-        padding: 1.5rem;
+    .dashboard-container,
+    .login-container {
+        padding: var(--space-md);
     }
 
     .dashboard-header {
-        font-size: 2.25rem;
+        font-size: clamp(1.5rem, 4vw, 2rem);
     }
 
     .section-header {
-        font-size: 1.25rem;
+        font-size: clamp(1rem, 3vw, 1.25rem);
     }
 
     .form-input,
     .btn {
-        font-size: 0.95rem;
-        padding: 0.65rem 1rem;
-    }
-
-    .w-1/3 {
-        width: 100%;
+        padding: 10px 12px;
     }
 
     .table th,
     .table td {
-        padding: 0.5rem;
+        padding: 10px 12px;
         font-size: 0.9rem;
     }
 }
 
 @media (max-width: 480px) {
-    .dashboard-header {
-        font-size: 1.75rem;
-    }
-
-    .section-header {
-        font-size: 1.1rem;
-    }
-
-    .form-input,
-    .btn {
-        font-size: 0.9rem;
-        padding: 0.5rem 0.75rem;
+    .login-container form {
+        max-width: 100%;
     }
 
     .card {
-        padding: 1rem;
+        padding: var(--space-md);
     }
+
+    body {
+        padding: var(--space-md);
+    }
+}
+
+/* Accessibility */
+:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Improved animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
 }
