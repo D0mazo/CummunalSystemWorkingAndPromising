@@ -21,7 +21,6 @@ namespace CommunalSystem.Repositories
             using var tx = conn.BeginTransaction();
             try
             {
-                // Check if exists
                 using var checkCmd = new MySqlCommand("SELECT id FROM community_services WHERE community_id = @cid AND service_id = @sid", conn, tx);
                 checkCmd.Parameters.AddWithValue("@cid", communityId);
                 checkCmd.Parameters.AddWithValue("@sid", serviceId);
@@ -69,13 +68,13 @@ namespace CommunalSystem.Repositories
             }
         }
 
-        public List<Price> GetForCommunity(int communityId, string searchTerm = null)
+        public List<ServicePrice> GetForCommunity(int communityId, string searchTerm = null)
         {
-            var prices = new List<Price>();
+            var servicePrices = new List<ServicePrice>();
             using var conn = _dbConnection.GetConnection();
             conn.Open();
             string sql = @"
-                SELECT cs.id, cs.community_id, cs.service_id, cs.price 
+                SELECT cs.id, cs.community_id, cs.service_id, cs.price, s.name AS service_name
                 FROM community_services cs 
                 JOIN services s ON cs.service_id = s.id 
                 WHERE cs.community_id = @cid";
@@ -92,14 +91,15 @@ namespace CommunalSystem.Repositories
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                prices.Add(new Price(
+                servicePrices.Add(new ServicePrice(
                     reader.GetInt32("id"),
                     reader.GetInt32("community_id"),
                     reader.GetInt32("service_id"),
-                    reader.GetDecimal("price")
+                    reader.GetDecimal("price"),
+                    reader.GetString("service_name")
                 ));
             }
-            return prices;
+            return servicePrices;
         }
     }
 }

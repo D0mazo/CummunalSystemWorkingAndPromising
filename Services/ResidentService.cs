@@ -12,7 +12,7 @@ namespace CommunalSystem.Services
             _communityServiceRepo = communityServiceRepo;
         }
 
-        public List<Price> ViewServices(int communityId, string searchTerm = null)
+        public List<ServicePrice> ViewServices(int communityId, string searchTerm = null)
         {
             return _communityServiceRepo.GetForCommunity(communityId, searchTerm);
         }
