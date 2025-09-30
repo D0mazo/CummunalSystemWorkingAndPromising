@@ -6,6 +6,14 @@
     <link href="~/css/styles.css" rel="stylesheet" />
 }
 <div class="dashboard-container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="success mt-4">@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="error mt-4">@TempData["Error"]</div>
+    }
     <h1 class="dashboard-header">Manager Dashboard</h1>
     <p class="text-gray-400 mb-6">@message</p>
     <div class="card">
@@ -36,12 +44,4 @@
             <button type="submit" class="btn w-full">Assign</button>
         </form>
     </div>
-    @if (TempData["Success"] != null)
-    {
-        <div class="success mt-4">@TempData["Success"]</div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="error mt-4">@TempData["Error"]</div>
-    }
 </div>
