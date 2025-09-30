@@ -21,11 +21,6 @@
             CommunityId = communityId;
         }
 
-        public void SetPassword(string newPassword)
-        {
-            Password = newPassword; // Hash in prod
-        }
-
         // Polymorphism: Overridden in subclasses
         public abstract object GetDashboardData();
     }
