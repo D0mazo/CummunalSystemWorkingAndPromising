@@ -1,104 +1,93 @@
 ﻿@{
-    ViewData["Title"] = "Admin Dashboard";
-    var communities = ViewBag.Communities as List<CommunalSystem.Models.Community>;
-    var services = ViewBag.Services as List<CommunalSystem.Models.Service>;
-    var users = ViewBag.Users as List<CommunalSystem.Models.User>;
+    ViewData["Title"] = "Administratoriaus Puslapis";
+    var communities = ViewBag.Communities as List<CommunalSystem.Models.Community> ?? new List<CommunalSystem.Models.Community>();
+    var services = ViewBag.Services as List<CommunalSystem.Models.Service> ?? new List<CommunalSystem.Models.Service>();
+    var users = ViewBag.Users as List<CommunalSystem.Models.User> ?? new List<CommunalSystem.Models.User>();
     var message = ViewBag.Message ?? "Šis puslapis skirtas administratoriui valdyti bendrijas, paslaugas ir vartotojus.";
     <link href="~/css/styles.css" rel="stylesheet" />
 }
 <div class="dashboard-container">
     @if (TempData["Success"] != null)
     {
-        <div class="success mt-4">@TempData["Success"]</div>
+        <div class="success">@TempData["Success"]</div>
     }
     @if (TempData["Error"] != null)
     {
-        <div class="error mt-4">@TempData["Error"]</div>
+        <div class="error">@TempData["Error"]</div>
     }
-    <h1 class="dashboard-header">Admin Dashboard</h1>
-    <p class="text-gray-400 mb-6">@message</p>
+    <h1>Administratoriaus Puslapis</h1>
+    <p>@message</p>
+    <form asp-controller="Account" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit">Atsijungti</button>
+    </form>
     <div class="card">
-        <h2 class="section-header">Communities</h2>
-        <ul class="list-disc pl-5 mb-4">
+        <h2>Bendrijos</h2>
+        <ul>
             @foreach (var community in communities)
             {
-                <li class="mb-2">
-                    <span class="text-gray-200">@community.Name</span>
-                    <form method="post" action="@Url.Action("EditCommunity", "Dashboard")" class="inline-block ml-4">
+                <li>
+                    <span>@community.Name</span>
+                    <form method="post" action="@Url.Action("EditCommunity", "Dashboard")" style="display:inline-block;">
                         <input type="hidden" name="communityId" value="@community.Id" />
-                        <div class="form-group inline-block">
-                            <input type="text" name="name" value="@community.Name" class="form-input w-1/3" />
-                            <button type="submit" class="btn ml-2">Edit</button>
-                        </div>
+                        <input type="text" name="name" value="@community.Name" />
+                        <button type="submit">Redaguoti</button>
                     </form>
-                    <a href="@Url.Action("DeleteCommunity", "Dashboard", new { communityId = community.Id })" class="text-red-400 hover:text-red-300 ml-2">Delete</a>
+                    <a href="@Url.Action("DeleteCommunity", "Dashboard", new { communityId = community.Id })" style="color:red; margin-left:10px;">Ištrinti</a>
                 </li>
             }
         </ul>
-        <form method="post" action="@Url.Action("CreateCommunity", "Dashboard")" class="mb-6">
-            <div class="form-group">
-                <label class="form-label">New Name:</label>
-                <input type="text" name="name" class="form-input" />
-            </div>
-            <button type="submit" class="btn">Create</button>
+        <form method="post" action="@Url.Action("CreateCommunity", "Dashboard")">
+            <label>Naujos bendrijos pavadinimas:</label>
+            <input type="text" name="name" />
+            <button type="submit">Sukurti</button>
         </form>
-
-        <h2 class="section-header">Services</h2>
-        <ul class="list-disc pl-5 mb-4">
+        <h2>Paslaugos</h2>
+        <ul>
             @foreach (var service in services)
             {
-                <li class="mb-2">
-                    <span class="text-gray-200">@service.Name</span>
-                    <form method="post" action="@Url.Action("EditService", "Dashboard")" class="inline-block ml-4">
+                <li>
+                    <span>@service.Name</span>
+                    <form method="post" action="@Url.Action("EditService", "Dashboard")" style="display:inline-block;">
                         <input type="hidden" name="serviceId" value="@service.Id" />
-                        <div class="form-group inline-block">
-                            <input type="text" name="name" value="@service.Name" class="form-input w-1/3" />
-                            <button type="submit" class="btn ml-2">Edit</button>
-                        </div>
+                        <input type="text" name="name" value="@service.Name" />
+                        <button type="submit">Redaguoti</button>
                     </form>
-                    <a href="@Url.Action("DeleteService", "Dashboard", new { serviceId = service.Id })" class="text-red-400 hover:text-red-300 ml-2">Delete</a>
+                    <a href="@Url.Action("DeleteService", "Dashboard", new { serviceId = service.Id })" style="color:red; margin-left:10px;">Ištrinti</a>
                 </li>
             }
         </ul>
-        <form method="post" action="@Url.Action("CreateService", "Dashboard")" class="mb-6">
-            <div class="form-group">
-                <label class="form-label">New Service Name:</label>
-                <input type="text" name="name" class="form-input" />
-            </div>
-            <button type="submit" class="btn">Create</button>
+        <form method="post" action="@Url.Action("CreateService", "Dashboard")">
+            <label>Naujos paslaugos pavadinimas:</label>
+            <input type="text" name="name" />
+            <button type="submit">Sukurti</button>
         </form>
-
-        <h2 class="section-header">Users</h2>
-        <ul class="list-disc pl-5 mb-4">
+        <h2>Vartotojai</h2>
+        <ul>
             @foreach (var user in users)
             {
-                <li class="mb-2">
-                    <span class="text-gray-200">@user.FirstName @user.LastName (@user.Role)</span>
-                    <a href="@Url.Action("DeleteUser", "Dashboard", new { userId = user.Id })" class="text-red-400 hover:text-red-300 ml-4">Delete</a>
+                <li>
+                    <span>@user.FirstName @user.LastName (@user.Role)</span>
+                    <a href="@Url.Action("DeleteUser", "Dashboard", new { userId = user.Id })" style="color:red; margin-left:10px;">Ištrinti</a>
                 </li>
             }
         </ul>
-        <form method="post" action="@Url.Action("CreateUser", "Dashboard")" class="mt-6 space-y-4">
-            <div class="form-group">
-                <label class="form-label">Role:</label>
-                <select name="role" class="form-input">
-                    <option value="manager">Manager</option>
-                    <option value="resident">Resident</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label class="form-label">First Name (Username):</label>
-                <input type="text" name="firstName" class="form-input" />
-            </div>
-            <div class="form-group">
-                <label class="form-label">Last Name (Password):</label>
-                <input type="text" name="lastName" class="form-input" />
-            </div>
-            <div class="form-group">
-                <label class="form-label">Community ID (for residents):</label>
-                <input type="number" name="communityId" class="form-input" />
-            </div>
-            <button type="submit" class="btn">Create</button>
+        <div></div>
+        <div></div>
+        <div></div>
+        <form method="post" action="@Url.Action("CreateUser", "Dashboard")">
+            <label>Vaidmuo:</label>
+            <select name="role">
+                <option value="manager">Vadybininkas</option>
+                <option value="resident">Gyventojas</option>
+            </select>
+            <label>Vardas (vartotojo vardas):</label>
+            <input type="text" name="firstName" />
+            <label>Pavardė (slaptažodis):</label>
+            <input type="text" name="lastName" />
+            <label>Bendrijos ID (gyventojams):</label>
+            <input type="number" name="communityId" />
+            <button type="submit">Sukurti</button>
         </form>
     </div>
 </div>

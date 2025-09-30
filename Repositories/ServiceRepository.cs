@@ -1,7 +1,6 @@
 ﻿using CommunalSystem.Data;
 using CommunalSystem.Models;
 using MySqlConnector;
-using System.Data;
 
 namespace CommunalSystem.Repositories
 {
@@ -18,59 +17,29 @@ namespace CommunalSystem.Repositories
         {
             using var conn = _dbConnection.GetConnection();
             conn.Open();
-            using var tx = conn.BeginTransaction();
-            try
-            {
-                using var cmd = new MySqlCommand("INSERT INTO services (name) VALUES (@name)", conn, tx);
-                cmd.Parameters.AddWithValue("@name", name);
-                cmd.ExecuteNonQuery();
-                tx.Commit();
-                return (int)cmd.LastInsertedId;
-            }
-            catch
-            {
-                tx.Rollback();
-                throw;
-            }
+            using var cmd = new MySqlCommand("INSERT INTO services (name) VALUES (@name)", conn);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.ExecuteNonQuery();
+            return (int)cmd.LastInsertedId;
         }
 
         public void Update(int serviceId, string name)
         {
             using var conn = _dbConnection.GetConnection();
             conn.Open();
-            using var tx = conn.BeginTransaction();
-            try
-            {
-                using var cmd = new MySqlCommand("UPDATE services SET name = @name WHERE id = @id", conn, tx);
-                cmd.Parameters.AddWithValue("@name", name);
-                cmd.Parameters.AddWithValue("@id", serviceId);
-                cmd.ExecuteNonQuery();
-                tx.Commit();
-            }
-            catch
-            {
-                tx.Rollback();
-                throw;
-            }
+            using var cmd = new MySqlCommand("UPDATE services SET name = @name WHERE id = @id", conn);
+            cmd.Parameters.AddWithValue("@name", name);
+            cmd.Parameters.AddWithValue("@id", serviceId);
+            cmd.ExecuteNonQuery();
         }
 
         public void Delete(int serviceId)
         {
             using var conn = _dbConnection.GetConnection();
             conn.Open();
-            using var tx = conn.BeginTransaction();
-            try
-            {
-                using var cmd = new MySqlCommand("DELETE FROM services WHERE id = @id", conn, tx);
-                cmd.Parameters.AddWithValue("@id", serviceId);
-                cmd.ExecuteNonQuery();
-                tx.Commit();
-            }
-            catch
-            {
-                tx.Rollback();
-                throw;
-            }
+            using var cmd = new MySqlCommand("DELETE FROM services WHERE id = @id", conn);
+            cmd.Parameters.AddWithValue("@id", serviceId);
+            cmd.ExecuteNonQuery();
         }
 
         public List<Service> GetAll()

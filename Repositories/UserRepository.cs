@@ -14,48 +14,62 @@ namespace CommunalSystem.Repositories
             _dbConnection = dbConnection;
         }
 
+        private User CreateUserFromReader(MySqlDataReader reader)
+        {
+            int id = reader.GetInt32("id");
+            string username = reader.GetString("username");
+            string password = reader.GetString("password");
+            string role = reader.GetString("role");
+            string firstName = reader.GetString("first_name");
+            string lastName = reader.GetString("last_name");
+            int? communityId = reader.IsDBNull("community_id") ? null : reader.GetInt32("community_id");
+
+            return role switch
+            {
+                "admin" => new Admin(id, username, password, role, firstName, lastName, communityId),
+                "manager" => new Manager(id, username, password, role, firstName, lastName, communityId),
+                "resident" => new Resident(id, username, password, role, firstName, lastName, communityId),
+                _ => null
+            };
+        }
+
         public User FindByUsername(string username)
         {
             using var conn = _dbConnection.GetConnection();
             conn.Open();
-            using var cmd = new MySqlCommand("SELECT id, username, password, role, first_name, last_name, community_id FROM users WHERE username = @username", conn);
+
+            using var cmd = new MySqlCommand(
+                "SELECT id, username, password, role, first_name, last_name, community_id FROM users WHERE username = @username",
+                conn);
             cmd.Parameters.AddWithValue("@username", username);
+
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
-            {
-                int id = reader.GetInt32("id");
-                string pw = reader.GetString("password");
-                string role = reader.GetString("role");
-                string fn = reader.GetString("first_name");
-                string ln = reader.GetString("last_name");
-                int? cid = reader.IsDBNull("community_id") ? null : reader.GetInt32("community_id");
-                return role switch
-                {
-                    "admin" => new Admin(id, username, pw, role, fn, ln, cid),
-                    "manager" => new Manager(id, username, pw, role, fn, ln, cid),
-                    "resident" => new Resident(id, username, pw, role, fn, ln, cid),
-                    _ => null
-                };
-            }
+                return CreateUserFromReader(reader);
+
             return null;
         }
 
         public int Save(string firstName, string lastName, string role, int? communityId = null)
         {
-            string username = firstName;
-            string password = lastName;
             using var conn = _dbConnection.GetConnection();
             conn.Open();
+
             using var tx = conn.BeginTransaction();
             try
             {
-                using var cmd = new MySqlCommand("INSERT INTO users (username, password, role, first_name, last_name, community_id) VALUES (@username, @password, @role, @firstName, @lastName, @communityId)", conn, tx);
-                cmd.Parameters.AddWithValue("@username", username);
-                cmd.Parameters.AddWithValue("@password", password);
+                using var cmd = new MySqlCommand(
+                    "INSERT INTO users (username, password, role, first_name, last_name, community_id) " +
+                    "VALUES (@username, @password, @role, @firstName, @lastName, @communityId)",
+                    conn, tx);
+
+                cmd.Parameters.AddWithValue("@username", firstName);
+                cmd.Parameters.AddWithValue("@password", lastName);
                 cmd.Parameters.AddWithValue("@role", role);
                 cmd.Parameters.AddWithValue("@firstName", firstName);
                 cmd.Parameters.AddWithValue("@lastName", lastName);
                 cmd.Parameters.AddWithValue("@communityId", communityId ?? (object)DBNull.Value);
+
                 cmd.ExecuteNonQuery();
                 tx.Commit();
                 return (int)cmd.LastInsertedId;
@@ -71,6 +85,7 @@ namespace CommunalSystem.Repositories
         {
             using var conn = _dbConnection.GetConnection();
             conn.Open();
+
             using var tx = conn.BeginTransaction();
             try
             {
@@ -91,24 +106,15 @@ namespace CommunalSystem.Repositories
             var users = new List<User>();
             using var conn = _dbConnection.GetConnection();
             conn.Open();
-            using var cmd = new MySqlCommand("SELECT id, username, password, role, first_name, last_name, community_id FROM users", conn);
+
+            using var cmd = new MySqlCommand(
+                "SELECT id, username, password, role, first_name, last_name, community_id FROM users",
+                conn);
             using var reader = cmd.ExecuteReader();
+
             while (reader.Read())
             {
-                int id = reader.GetInt32("id");
-                string un = reader.GetString("username");
-                string pw = reader.GetString("password");
-                string role = reader.GetString("role");
-                string fn = reader.GetString("first_name");
-                string ln = reader.GetString("last_name");
-                int? cid = reader.IsDBNull("community_id") ? null : reader.GetInt32("community_id");
-                User user = role switch
-                {
-                    "admin" => new Admin(id, un, pw, role, fn, ln, cid),
-                    "manager" => new Manager(id, un, pw, role, fn, ln, cid),
-                    "resident" => new Resident(id, un, pw, role, fn, ln, cid),
-                    _ => null
-                };
+                var user = CreateUserFromReader(reader);
                 if (user != null) users.Add(user);
             }
             return users;

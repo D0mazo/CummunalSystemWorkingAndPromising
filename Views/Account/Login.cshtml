@@ -1,37 +1,32 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Prisijungimas";
     var message = ViewBag.Message ?? "Šis puslapis skirtas prisijungti prie komunalinių paslaugų sistemos. Įveskite savo vartotojo vardą ir slaptažodį.";
     <link href="~/css/styles.css" rel="stylesheet" />
 }
-<div class="login-container relative overflow-hidden">
-    <div class="absolute inset-0 pointer-events-none">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-    <h1 class="dashboard-header animate-pulse-slow">Login</h1>
-    <p class="text-center text-gray-400 mb-6">@message</p>
-    <form method="post" class="space-y-6 bg-glass p-6 rounded-xl shadow-lg glow">
-        <div class="form-group">
-            <label class="form-label">Username:</label>
-            <input type="text" name="username" class="form-input focus:ring-4 focus:ring-cyan-500/50" placeholder="Enter your username" />
+
+<div class="login-container">
+    <h1>Prisijungimas</h1>
+    <p>@message</p>
+
+    <form method="post">
+        <div>
+            <label>Vartotojo vardas:</label>
+            <input type="text" name="username" placeholder="Įveskite vartotojo vardą" />
         </div>
-        <div class="form-group">
-            <label class="form-label">Password:</label>
-            <input type="password" name="password" class="form-input focus:ring-4 focus:ring-cyan-500/50" placeholder="Enter your password" />
+        <div>
+            <label>Slaptažodis:</label>
+            <input type="password" name="password" placeholder="Įveskite slaptažodį" />
         </div>
-        <button type="submit" class="btn w-full text-lg py-3 glow hover:scale-105 transform transition-transform duration-300">
-            <span>Login</span>
-            <span class="ml-2 inline-block animate-pulse-slow">🔑</span>
-        </button>
+        <button type="submit">Prisijungti</button>
     </form>
 </div>
+
 <script>
-    // Display success notification before redirect
+    // Pranešimai apie sėkmę arba klaidą
     @if (TempData["Success"] != null)
     {
             @:alert('@TempData["Success"]');
-            @:setTimeout(() => window.location.href = '@Url.Action("Index", "Dashboard")', 1500); // Redirect after 1.5 seconds
+            @:setTimeout(() => window.location.href = '@Url.Action("Index", "Dashboard")', 1500);
     }
     @if (TempData["Error"] != null)
     {

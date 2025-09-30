@@ -4,7 +4,7 @@
     {
         public int Id { get; private set; }
         public string Username { get; private set; }
-        public string Password { get; private set; } // In prod, hash
+        public string Password { get; private set; }
         public string Role { get; private set; }
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
