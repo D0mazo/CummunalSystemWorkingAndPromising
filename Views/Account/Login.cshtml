@@ -1,35 +1,38 @@
 ﻿@{
     ViewData["Title"] = "Prisijungimas";
-    var message = ViewBag.Message ?? "Šis puslapis skirtas prisijungti prie komunalinių paslaugų sistemos. Įveskite savo vartotojo vardą ir slaptažodį.";
     <link href="~/css/styles.css" rel="stylesheet" />
 }
 
 <div class="login-container">
-    <h1>Prisijungimas</h1>
-    <p>@message</p>
-
-    <form method="post">
-        <div>
-            <label>Vartotojo vardas:</label>
-            <input type="text" name="username" placeholder="Įveskite vartotojo vardą" />
-        </div>
-        <div>
-            <label>Slaptažodis:</label>
-            <input type="password" name="password" placeholder="Įveskite slaptažodį" />
-        </div>
-        <button type="submit">Prisijungti</button>
-    </form>
-</div>
-
-<script>
-    // Pranešimai apie sėkmę arba klaidą
+    @* Show messages *@
     @if (TempData["Success"] != null)
     {
-            @:alert('@TempData["Success"]');
-            @:setTimeout(() => window.location.href = '@Url.Action("Index", "Dashboard")', 1500);
+        <div class="success">@TempData["Success"]</div>
     }
     @if (TempData["Error"] != null)
     {
-            @:alert('@TempData["Error"]');
+        <div class="error">@TempData["Error"]</div>
     }
-</script>
+    @if (ViewBag.Message != null)
+    {
+        <div class="info">@ViewBag.Message</div>
+    }
+
+    <h1>Prisijungimas</h1>
+
+    <form asp-controller="Account" asp-action="Login" method="post">
+        @Html.AntiForgeryToken()   <!-- 🔴 REQUIRED for [ValidateAntiForgeryToken] -->
+
+        <div>
+            <label for="username">Vartotojo vardas:</label>
+            <input type="text" id="username" name="username" required />
+        </div>
+
+        <div>
+            <label for="password">Slaptažodis:</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+
+        <button type="submit">Prisijungti</button>
+    </form>
+</div>

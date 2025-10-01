@@ -3,6 +3,7 @@ using CommunalSystem.Repositories;
 using CommunalSystem.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace CommunalSystem.Controllers
 {
@@ -36,41 +37,17 @@ namespace CommunalSystem.Controllers
         // ===========================
         public IActionResult Index()
         {
-            try
-            {
-                var role = HttpContext.Session.GetString("Role");
-                if (string.IsNullOrEmpty(role))
-                    return RedirectToAction("Login", "Account");
-
-                var username = HttpContext.Session.GetString("Username");
-                var user = _userRepo.FindByUsername(username);
-                if (user == null)
-                {
-                    TempData["Error"] = "Vartotojas nerastas. Prašome prisijungti iš naujo.";
-                    return RedirectToAction("Login", "Account");
-                }
-
-                ViewBag.Message = role switch
-                {
-                    "admin" => "Šis puslapis skirtas administratoriui valdyti bendrijas, paslaugas ir vartotojus.",
-                    "manager" => "Šis puslapis skirtas vadybininkui priskirti paslaugas ir nustatyti kainas.",
-                    "resident" => "Šis puslapis skirtas gyventojui peržiūrėti savo bendrijos paslaugas ir kainas.",
-                    _ => "Netinkamas vaidmuo."
-                };
-
-                return role switch
-                {
-                    "admin" => AdminView(),
-                    "manager" => ManagerView(),
-                    "resident" => ResidentView(),
-                    _ => BadRequest("Netinkamas vaidmuo.")
-                };
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Klaida įkeliant dashboard: {ex.Message}";
+            var role = HttpContext.Session.GetString("Role");
+            if (string.IsNullOrEmpty(role))
                 return RedirectToAction("Login", "Account");
-            }
+
+            return role switch
+            {
+                "admin" => AdminView(),
+                "manager" => ManagerView(),
+                "resident" => ResidentView(),
+                _ => BadRequest("Netinkamas vaidmuo.")
+            };
         }
 
         // ===========================
@@ -96,18 +73,55 @@ namespace CommunalSystem.Controllers
             var communityId = HttpContext.Session.GetInt32("CommunityId");
             if (!communityId.HasValue)
             {
-                TempData["Error"] = "Jūsų bendrijos ID nerastas. Prašome prisijungti iš naujo.";
+                TempData["Error"] = "Jūsų bendrijos ID nerastas.";
                 return RedirectToAction("Login", "Account");
             }
 
-            ViewBag.Services = _residentService.ViewServices(communityId.Value);
-            return View("Resident");
+            var community = _communityRepo.FindById(communityId.Value);
+            var services = _residentService.ViewServices(communityId.Value);
+
+            var model = new ResidentDashboardViewModel
+            {
+                CommunityName = community?.Name ?? "Nerasta bendrija",
+                Services = services,
+                Message = "Šis puslapis skirtas gyventojui peržiūrėti savo bendrijos paslaugas ir kainas.",
+                TempSuccess = TempData["Success"] as string,
+                TempError = TempData["Error"] as string
+            };
+
+            return View("Resident", model);
+        }
+
+        // ===========================
+        // Resident: Search Services
+        // ===========================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ViewServices(string search)
+        {
+            var communityId = HttpContext.Session.GetInt32("CommunityId");
+            if (!communityId.HasValue) return RedirectToAction("Index");
+
+            var community = _communityRepo.FindById(communityId.Value);
+            var services = _residentService.ViewServices(communityId.Value, search);
+
+            var model = new ResidentDashboardViewModel
+            {
+                CommunityName = community?.Name ?? "Nerasta bendrija",
+                Services = services,
+                Message = "Paslaugų sąrašas atnaujintas pagal jūsų paiešką.",
+                TempSuccess = TempData["Success"] as string,
+                TempError = TempData["Error"] as string
+            };
+
+            return View("Resident", model);
         }
 
         // ===========================
         // Admin: Community Operations
         // ===========================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateCommunity(string name) => AdminAction(() =>
         {
             _adminService.CreateCommunity(name);
@@ -115,12 +129,15 @@ namespace CommunalSystem.Controllers
         }, "Bendrijos kūrimo klaida");
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditCommunity(int communityId, string name) => AdminAction(() =>
         {
             _adminService.EditCommunity(communityId, name);
             TempData["Success"] = "Bendrija atnaujinta sėkmingai!";
         }, "Bendrijos atnaujinimo klaida");
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteCommunity(int communityId) => AdminAction(() =>
         {
             _adminService.DeleteCommunity(communityId);
@@ -131,6 +148,7 @@ namespace CommunalSystem.Controllers
         // Admin: Service Operations
         // ===========================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateService(string name) => AdminAction(() =>
         {
             _adminService.CreateService(name);
@@ -138,12 +156,15 @@ namespace CommunalSystem.Controllers
         }, "Paslaugos kūrimo klaida");
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditService(int serviceId, string name) => AdminAction(() =>
         {
             _adminService.EditService(serviceId, name);
             TempData["Success"] = "Paslauga atnaujinta sėkmingai!";
         }, "Paslaugos atnaujinimo klaida");
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteService(int serviceId) => AdminAction(() =>
         {
             _adminService.DeleteService(serviceId);
@@ -154,12 +175,15 @@ namespace CommunalSystem.Controllers
         // Admin: User Operations
         // ===========================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateUser(string role, string firstName, string lastName, int? communityId = null) => AdminAction(() =>
         {
             _adminService.CreateUser(role, firstName, lastName, communityId);
             TempData["Success"] = $"Naujas vartotojas pridėtas sėkmingai! (Vartotojo vardas: {firstName}, Slaptažodis: {lastName})";
         }, "Vartotojo kūrimo klaida");
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteUser(int userId) => AdminAction(() =>
         {
             _adminService.DeleteUser(userId);
@@ -170,6 +194,7 @@ namespace CommunalSystem.Controllers
         // Manager: Service Assignment
         // ===========================
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AssignService(int communityId, int serviceId, decimal price) => ManagerAction(() =>
         {
             _managerService.AssignService(communityId, serviceId, price);
@@ -177,6 +202,7 @@ namespace CommunalSystem.Controllers
         }, "Paslaugos priskyrimo klaida");
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditPrice(int communityId, int serviceId, decimal price) => ManagerAction(() =>
         {
             _managerService.EditPrice(communityId, serviceId, price);
@@ -184,57 +210,22 @@ namespace CommunalSystem.Controllers
         }, "Kainos atnaujinimo klaida");
 
         // ===========================
-        // Resident: View Services
-        // ===========================
-        [HttpPost]
-        public IActionResult ViewServices(string search)
-        {
-            if (!IsRole("resident")) return Unauthorized("Neturite gyventojo teisių.");
-            try
-            {
-                var communityId = HttpContext.Session.GetInt32("CommunityId").Value;
-                ViewBag.Services = _residentService.ViewServices(communityId, search);
-                TempData["Message"] = "Paslaugų sąrašas atnaujintas pagal jūsų paiešką.";
-                return View("Resident");
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Klaida peržiūrint paslaugas: {ex.Message}";
-                return RedirectToAction("Index");
-            }
-        }
-
-        // ===========================
         // Helper Methods
         // ===========================
         private IActionResult AdminAction(Action action, string errorMessage)
         {
-            if (!IsRole("admin")) return Unauthorized("Neturite administratoriaus teisių.");
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"{errorMessage}: {ex.Message}";
-            }
+            if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+            try { action(); }
+            catch (Exception ex) { TempData["Error"] = $"{errorMessage}: {ex.Message}"; }
             return RedirectToAction("Index");
         }
 
         private IActionResult ManagerAction(Action action, string errorMessage)
         {
-            if (!IsRole("manager")) return Unauthorized("Neturite vadybininko teisių.");
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"{errorMessage}: {ex.Message}";
-            }
+            if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized();
+            try { action(); }
+            catch (Exception ex) { TempData["Error"] = $"{errorMessage}: {ex.Message}"; }
             return RedirectToAction("Index");
         }
-
-        private bool IsRole(string role) => HttpContext.Session.GetString("Role") == role;
     }
 }

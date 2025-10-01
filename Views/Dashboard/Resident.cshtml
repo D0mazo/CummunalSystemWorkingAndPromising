@@ -1,31 +1,38 @@
-﻿@{
+﻿@model CommunalSystem.Models.ResidentDashboardViewModel
+
+@{
     ViewData["Title"] = "Gyventojo Puslapis";
-    var services = ViewBag.Services as List<CommunalSystem.Models.ServicePrice>;
-    var message = ViewBag.Message ?? "Šis puslapis skirtas gyventojui peržiūrėti savo bendrijos paslaugas ir kainas.";
     <link href="~/css/styles.css" rel="stylesheet" />
 }
 
 <div class="dashboard-container">
-    @if (TempData["Success"] != null)
+    @if (!string.IsNullOrEmpty(Model.TempSuccess))
     {
-        <div class="success">@TempData["Success"]</div>
+        <div class="success">@Model.TempSuccess</div>
     }
-    @if (TempData["Error"] != null)
+    @if (!string.IsNullOrEmpty(Model.TempError))
     {
-        <div class="error">@TempData["Error"]</div>
+        <div class="error">@Model.TempError</div>
     }
-    @if (TempData["Message"] != null)
+    @if (!string.IsNullOrEmpty(Model.Message))
     {
-        <div class="info">@TempData["Message"]</div>
+        <div class="info">@Model.Message</div>
     }
 
     <h1>Gyventojo Puslapis</h1>
 
     <form asp-controller="Account" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
         <button type="submit">Logout</button>
     </form>
 
-    <p>@message</p>
+    @if (!string.IsNullOrEmpty(Model.CommunityName))
+    {
+        <div class="card">
+            <h2>Jūsų bendrija:</h2>
+            <p>@Model.CommunityName</p>
+        </div>
+    }
 
     <div class="card">
         <h2>Services</h2>
@@ -45,7 +52,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var service in services)
+                @foreach (var service in Model.Services)
                 {
                     <tr>
                         <td>@service.ServiceName</td>
