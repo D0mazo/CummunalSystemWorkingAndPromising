@@ -7,17 +7,19 @@
 }
 
 <div class="dashboard-container">
-    @if (!string.IsNullOrEmpty(Model.TempSuccess))
-    {
-        <div class="success">@Model.TempSuccess</div>
-    }
-    @if (!string.IsNullOrEmpty(Model.TempError))
-    {
-        <div class="error">@Model.TempError</div>
-    }
-    @if (!string.IsNullOrEmpty(Model.Message))
-    {
-        <div class="info">@Model.Message</div>
+    @if (Model != null) {
+        @if (!string.IsNullOrEmpty(Model.TempSuccess))
+            {
+                <div class="success">@Model.TempSuccess</div>
+            }
+            @if (!string.IsNullOrEmpty(Model.TempError))
+            {
+                <div class="error">@Model.TempError</div>
+            }
+            @if (!string.IsNullOrEmpty(Model.Message))
+            {
+                <div class="info">@Model.Message</div>
+            }
     }
 
     <h1>Gyventojo Puslapis</h1>
@@ -27,7 +29,7 @@
         <button type="submit">Logout</button>
     </form>
 
-    @if (!string.IsNullOrEmpty(Model.CommunityName))
+    @if (Model != null && !string.IsNullOrEmpty(Model.CommunityName))
     {
         <div class="card">
             <h2>Jūsų bendrija:</h2>
@@ -55,12 +57,14 @@
             <tbody>
                 @inject IHttpContextAccessor HttpContextAccessor
 
-                @foreach (var service in Model.Services.Where(s => s.CommunityId == HttpContextAccessor.HttpContext?.Session.GetInt32("CommunityId")))
+                @if (Model != null){
+                    @foreach (var service in Model.ServicePrices.Where(s => s.CommunityId == HttpContextAccessor.HttpContext?.Session.GetInt32("CommunityId")))
                 {
                     <tr>
                         <td>@service.ServiceName</td>
                         <td>@service.Price</td>
                     </tr>
+                }
                 }
             </tbody>
         </table>

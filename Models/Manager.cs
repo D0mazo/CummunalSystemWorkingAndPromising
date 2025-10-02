@@ -7,7 +7,7 @@
 
         public override object GetDashboardData()
         {
-            return new { Message = "Manager dashboard: Assign services and set prices" };
+            return new { Message = "" };
         }
     }
 }

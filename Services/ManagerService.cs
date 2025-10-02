@@ -20,5 +20,19 @@ namespace CommunalSystem.Services
         {
             _communityServiceRepo.UpdatePrice(communityId, serviceId, price);
         }
+
+        public void SetPrice(int communityId, int serviceId, decimal price)
+        {
+
+            if (_communityServiceRepo.CommunityPriceExists(communityId, serviceId))
+            {
+                _communityServiceRepo.UpdatePrice(communityId, serviceId, price);
+            }
+            else
+            {
+                _communityServiceRepo.AssignAndSetPrice(communityId, serviceId, price);
+            }
+                
+        }
     }
 }

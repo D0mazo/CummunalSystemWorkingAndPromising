@@ -7,7 +7,7 @@
 
         public override object GetDashboardData()
         {
-            return new { Message = "Admin dashboard: Manage communities, services, users" };
+            return new { Message = "" };
         }
     }
 }

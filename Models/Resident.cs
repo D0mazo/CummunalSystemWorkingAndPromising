@@ -7,7 +7,7 @@
 
         public override object GetDashboardData()
         {
-            return new { Message = "Resident dashboard: View services and prices" };
+            return new { Message = "" };
         }
     }
 }

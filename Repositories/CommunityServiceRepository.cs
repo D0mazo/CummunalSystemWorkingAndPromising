@@ -14,6 +14,7 @@ namespace CommunalSystem.Repositories
             _dbConnection = dbConnection;
         }
 
+
         public int AssignAndSetPrice(int communityId, int serviceId, decimal price)
         {
             using var conn = _dbConnection.GetConnection();
@@ -101,5 +102,20 @@ namespace CommunalSystem.Repositories
             }
             return servicePrices;
         }
+
+        public bool CommunityPriceExists(int communityId, int serviceId)
+        {
+            using var conn = _dbConnection.GetConnection();
+            conn.Open();
+
+            using var cmd = new MySqlCommand(
+                "SELECT 1 FROM community_services WHERE community_id = @cid AND service_id = @sid LIMIT 1", conn);
+
+            cmd.Parameters.AddWithValue("@cid", communityId);
+            cmd.Parameters.AddWithValue("@sid", serviceId);
+
+            return cmd.ExecuteScalar() != null;
+        }
+
     }
 }
