@@ -4,7 +4,6 @@
 }
 
 <div class="login-container">
-    @* Show messages *@
     @if (TempData["Success"] != null)
     {
         <div class="success">@TempData["Success"]</div>
@@ -21,7 +20,7 @@
     <h1>Prisijungimas</h1>
 
     <form asp-controller="Account" asp-action="Login" method="post">
-        @Html.AntiForgeryToken()   <!-- 🔴 REQUIRED for [ValidateAntiForgeryToken] -->
+        @Html.AntiForgeryToken()
 
         <div>
             <label for="username">Vartotojo vardas:</label>

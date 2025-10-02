@@ -66,5 +66,6 @@ namespace CommunalSystem.Controllers
             TempData["Success"] = "Atsijungėte sėkmingai.";
             return RedirectToAction("Login", "Account");
         }
+
     }
 }

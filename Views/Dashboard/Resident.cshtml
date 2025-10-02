@@ -1,4 +1,5 @@
 ﻿@model CommunalSystem.Models.ResidentDashboardViewModel
+@inject IHttpContextAccessor HttpContextAccessor
 
 @{
     ViewData["Title"] = "Gyventojo Puslapis";
@@ -52,7 +53,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var service in Model.Services)
+                @inject IHttpContextAccessor HttpContextAccessor
+
+                @foreach (var service in Model.Services.Where(s => s.CommunityId == HttpContextAccessor.HttpContext?.Session.GetInt32("CommunityId")))
                 {
                     <tr>
                         <td>@service.ServiceName</td>

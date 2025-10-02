@@ -1,12 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <title>@ViewData["Title"]</title>
     <link href="~/css/styles.css" rel="stylesheet" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
 </head>
 <body>
-    
     @if (TempData["Success"] != null)
     {
         <div class="success">@TempData["Success"]</div>
@@ -15,6 +20,11 @@
     {
         <div class="error">@TempData["Error"]</div>
     }
-    @RenderBody()
+
+    <!-- Page Content -->
+    <div class="content">
+        @RenderBody()
+    </div>
+    <script src="/_framework/aspnetcore-browser-refresh.js"></script>
 </body>
 </html>

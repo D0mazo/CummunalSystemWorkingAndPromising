@@ -7,6 +7,7 @@ using System;
 
 namespace CommunalSystem.Controllers
 {
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
     public class DashboardController : Controller
     {
         private readonly IUserRepository _userRepo;
@@ -33,20 +34,25 @@ namespace CommunalSystem.Controllers
         }
 
         // ===========================
+        // Helper to check session
+        // ===========================
+        private bool IsLoggedIn() => HttpContext.Session.GetInt32("UserId") != null;
+
+        // ===========================
         // Main Dashboard
         // ===========================
         public IActionResult Index()
         {
-            var role = HttpContext.Session.GetString("Role");
-            if (string.IsNullOrEmpty(role))
+            if (!IsLoggedIn())
                 return RedirectToAction("Login", "Account");
 
+            var role = HttpContext.Session.GetString("Role");
             return role switch
             {
                 "admin" => AdminView(),
                 "manager" => ManagerView(),
                 "resident" => ResidentView(),
-                _ => BadRequest("Netinkamas vaidmuo.")
+                _ => RedirectToAction("Login", "Account")
             };
         }
 
@@ -55,6 +61,9 @@ namespace CommunalSystem.Controllers
         // ===========================
         private IActionResult AdminView()
         {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login", "Account");
+
             ViewBag.Communities = _communityRepo.GetAll();
             ViewBag.Services = _serviceRepo.GetAll();
             ViewBag.Users = _userRepo.GetAll();
@@ -63,6 +72,9 @@ namespace CommunalSystem.Controllers
 
         private IActionResult ManagerView()
         {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login", "Account");
+
             ViewBag.Communities = _communityRepo.GetAll();
             ViewBag.Services = _serviceRepo.GetAll();
             return View("Manager");
@@ -70,6 +82,9 @@ namespace CommunalSystem.Controllers
 
         private IActionResult ResidentView()
         {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login", "Account");
+
             var communityId = HttpContext.Session.GetInt32("CommunityId");
             if (!communityId.HasValue)
             {
@@ -99,8 +114,11 @@ namespace CommunalSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ViewServices(string search)
         {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login", "Account");
+
             var communityId = HttpContext.Session.GetInt32("CommunityId");
-            if (!communityId.HasValue) return RedirectToAction("Index");
+            if (!communityId.HasValue) return RedirectToAction("Login", "Account");
 
             var community = _communityRepo.FindById(communityId.Value);
             var services = _residentService.ViewServices(communityId.Value, search);
@@ -214,17 +232,23 @@ namespace CommunalSystem.Controllers
         // ===========================
         private IActionResult AdminAction(Action action, string errorMessage)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
             if (HttpContext.Session.GetString("Role") != "admin") return Unauthorized();
+
             try { action(); }
             catch (Exception ex) { TempData["Error"] = $"{errorMessage}: {ex.Message}"; }
+
             return RedirectToAction("Index");
         }
 
         private IActionResult ManagerAction(Action action, string errorMessage)
         {
+            if (!IsLoggedIn()) return RedirectToAction("Login", "Account");
             if (HttpContext.Session.GetString("Role") != "manager") return Unauthorized();
+
             try { action(); }
             catch (Exception ex) { TempData["Error"] = $"{errorMessage}: {ex.Message}"; }
+
             return RedirectToAction("Index");
         }
     }

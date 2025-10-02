@@ -19,6 +19,9 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// HttpContextAccessor for _Layout.cshtml
+builder.Services.AddHttpContextAccessor();
+
 // DI for repositories and services
 builder.Services.AddSingleton<DbConnection>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Atsijungimas";
+    <link href="~/css/styles.css" rel="stylesheet" />
+}
+
+<div class="logout-container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="success">@TempData["Success"]</div>
+    }
+
+    <h1>Atsijungėte</h1>
+    <p>Jūs sėkmingai atsijungėte iš sistemos.</p>
+
+    <a asp-controller="Account" asp-action="Login" class="btn">Prisijungti dar kartą</a>
+</div>
