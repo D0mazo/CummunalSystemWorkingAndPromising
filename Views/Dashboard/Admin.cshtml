@@ -17,9 +17,9 @@
     }
     <h1>Administratoriaus Puslapis</h1>
     <p>@message</p>
-    <form asp-controller="Account" asp-action="Logout" method="post">
-        @Html.AntiForgeryToken()
-        <button type="submit">Atsijungti</button>
+    <form method="post" action="@Url.Action("Logout", "Account")">
+    @Html.AntiForgeryToken()
+    <button type="submit">Logout</button>
     </form>
     <div class="card">
         <h2>Bendrijos</h2>
